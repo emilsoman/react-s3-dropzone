@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import S3Dropzone from './s3-dropzone';
 
-class DropzoneDemo = (props) => {
+var DropzoneDemo = (props) => {
   var AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
   var POLICY = process.env.POLICY;
   var SIGNATURE = process.env.SIGNATURE;
