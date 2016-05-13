@@ -8,17 +8,31 @@ export default class S3Dropzone extends React.Component {
   }
 
   uploadProgress(event, file) {
+    var percentComplete = 0;
     if (event.lengthComputable) {
-      var percentComplete = Math.round(event.loaded * 100 / event.total);
-      console.log(file.name + " -- " + percentComplete);
+      percentComplete = Math.round(event.loaded * 100 / event.total);
+      console.log(`${file.uniqueId} progress : ${percentComplete}`);
     }
     else {
       console.log("Progress unknown");
+      percentComplete = 50;
+    }
+    if(this.props.onProgress) {
+      file.uploading = percentComplete != 100;
+      file.percentage = percentComplete;
+      this.props.onProgress(file);
     }
   }
 
   uploadComplete(event, file) {
-    console.log(file.name + " done - " + event.target.responseText + " -- status = " + event.target.status);
+    var responseXML = event.target.responseXML;
+    var locationTag = responseXML.getElementsByTagName("Location")[0];
+    file.url = locationTag.textContent;
+    console.log(`${file.name} uploaded to ${file.url}`);
+    if(this.props.onComplete) {
+      file.uploading = false;
+      this.props.onComplete(file);
+    }
   }
 
   uploadFailed(event, file) {
@@ -31,8 +45,9 @@ export default class S3Dropzone extends React.Component {
   }
 
   uploadFile(file) {
+    file.uniqueId = this.getObjectKey(file);
     var formData = new FormData();
-    formData.append('key', this.getObjectKey(file));
+    formData.append('key', file.uniqueId);
     formData.append('acl', this.props.acl);
     formData.append('Content-Type', file.type);
     formData.append('AWSAccessKeyId', this.props.awsAccessKeyId);
@@ -42,7 +57,6 @@ export default class S3Dropzone extends React.Component {
     formData.append("file",file);
 
     var xhr = new XMLHttpRequest();
-    var boundary = Math.random().toString().substr(2);
     xhr.upload.addEventListener("progress", (event) => { this.uploadProgress(event, file) }, false);
     xhr.addEventListener("load", (event) => { this.uploadComplete(event, file) }, false);
     xhr.addEventListener("error", (event) => { this.uploadFailed(event, file) }, false);
@@ -50,6 +64,10 @@ export default class S3Dropzone extends React.Component {
 
     xhr.open('POST', this.props.url, true);
     xhr.send(formData);
+    if(this.props.onProgress) {
+      file.uploading = true;
+      file.percentage = 0;
+    }
   }
 
   dropFiles(files) {
