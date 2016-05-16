@@ -2,19 +2,23 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import S3Dropzone from './s3-dropzone';
 
+require("./styles.css");
+
 const ProgressBar = (props) => {
+  var style = {width: props.percentage + '%'};
   return(
-    <div>
-      {props.percentage} %
+    <div className="upload-progress">
+      <div className="upload-progress-bar" style={style}></div>
+      <button onClick={props.onAbort}>Abort</button>
     </div>
   );
 }
 
 const FileStatus = (props) => {
-  var progressBar = props.file.uploading ? <ProgressBar percentage={props.file.percentage}/> : null;
+  var progressBar = props.file.uploading ? <ProgressBar percentage={props.file.percentage} onAbort={props.file.abort.bind(props.file)}/> : null;
   return(
-    <div>
-      {props.file.name}
+    <div className="upload-queue-item">
+      {props.file.file.name}
       {progressBar}
     </div>
   );
@@ -25,7 +29,7 @@ const FileStatusList = (props) => {
     return(<FileStatus file={file} key={file.uniqueId}/>);
   });
   return(
-    <div>
+    <div className="upload-queue">
       {list}
     </div>
    );
@@ -62,16 +66,17 @@ class DropzoneDemo extends React.Component {
     var SIGNATURE = process.env.SIGNATURE;
     var URL = process.env.URL;
     return (
-        <div>
+        <div className="s3-manager">
           <S3Dropzone
-            onComplete=""
             onProgress={this.updateFileProgress.bind(this)}
+            onComplete={this.updateFileProgress.bind(this)}
+            className="dropzone"
             url={URL}
             keyPrefix="uploads/" acl="private" awsAccessKeyId={AWS_ACCESS_KEY_ID}
             policy={POLICY}
             signature={SIGNATURE}
-            successStatus="201">
-            <div>Try dropping some files here, or click to select files to upload.</div>
+            successStatus={201}>
+            <div className="file-input-text">Drag and drop files to upload them (or click)</div>
           </S3Dropzone>
           <FileStatusList files={this.state.files}/>
         </div>

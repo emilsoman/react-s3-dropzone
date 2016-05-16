@@ -18,6 +18,10 @@ module.exports = {
         test: /\.js$/,
         loaders: ["react-hot", "babel"],
         include: path.join(__dirname, 'app')
+      },
+      { test: /\.css$/,
+        loader: "style-loader!css-loader",
+        include: path.join(__dirname, 'app')
       }
     ]
   },

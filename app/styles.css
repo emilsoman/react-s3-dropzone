@@ -1,0 +1,41 @@
+.s3-manager .dropzone{
+  max-width:520px;
+  background-color: #F5F5F5;
+  height:100px;
+  margin-bottom: 10px;
+}
+.s3-manager .upload-queue{
+  margin-bottom: 10px;
+}
+.s3-manager .upload-queue-item {
+  border: 1px solid #ddd;
+  background-color:#F5F5F5;
+  -webkit-border-radius:3px;
+  -moz-border-radius:3px;
+  border-radius:3px;
+  font-size:11px;
+  margin-top:5px;
+  max-width:500px;
+  padding:10px
+}
+.s3-manager .upload-progress {
+    background-color:#E5E5E5;
+    margin-top:10px;
+    width:100%
+}
+.s3-manager .upload-progress-bar {
+    background-color:#09F;
+    height:3px;
+    width:1px
+}
+.s3-manager .upload-progress button {
+    float:right;
+    position:relative;
+    top:-30px;
+}
+
+.s3-manager .file-input-text {
+  padding-top: 2em;
+  position: relative;
+  margin: auto 30%;
+}

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Dropzone from 'react-dropzone';
+import FileUpload from './file-upload'
 
 // Can be refactored into a stateless component
 export default class S3Dropzone extends React.Component {
@@ -7,79 +8,80 @@ export default class S3Dropzone extends React.Component {
     super(props);
   }
 
-  uploadProgress(event, file) {
-    var percentComplete = 0;
-    if (event.lengthComputable) {
-      percentComplete = Math.round(event.loaded * 100 / event.total);
-      console.log(`${file.uniqueId} progress : ${percentComplete}`);
-    }
-    else {
-      console.log("Progress unknown");
-      percentComplete = 50;
-    }
+  static propTypes = {
+    // Callbacks
+    onComplete: PropTypes.func,
+    onProgress: PropTypes.func,
+    onError: PropTypes.func,
+    onAbort: PropTypes.func,
+
+    // S3 upload params
+    url: PropTypes.string,
+    keyPrefix: PropTypes.string,
+    acl: PropTypes.string,
+    awsAccessKeyId: PropTypes.string,
+    policy: PropTypes.string,
+    signature: PropTypes.string,
+    successStatus: PropTypes.number
+  }
+
+  onProgress(fileUpload) {
+    console.log(`${fileUpload.uniqueId} progress : ${fileUpload.percentage}`);
+
     if(this.props.onProgress) {
-      file.uploading = percentComplete != 100;
-      file.percentage = percentComplete;
-      this.props.onProgress(file);
+      this.props.onProgress(fileUpload);
     }
   }
 
-  uploadComplete(event, file) {
-    var responseXML = event.target.responseXML;
-    var locationTag = responseXML.getElementsByTagName("Location")[0];
-    file.url = locationTag.textContent;
-    console.log(`${file.name} uploaded to ${file.url}`);
+  onComplete(fileUpload) {
+    console.log(`${fileUpload.uniqueId} uploaded to : ${fileUpload.s3Url}`);
+
     if(this.props.onComplete) {
-      file.uploading = false;
-      this.props.onComplete(file);
+      this.props.onComplete(fileUpload);
     }
   }
 
-  uploadFailed(event, file) {
-    console.log(file.name + " failed - " + event);
+  onError(fileUpload) {
+    console.log(`${fileUpload.uniqueId} upload errored!`);
+
+    if(this.props.onError) {
+      this.props.onError(fileUpload);
+    }
   }
 
-  getObjectKey(file) {
-    var randomString = Math.random().toString(36).substr(2,16);
-    return `${this.props.keyPrefix}${randomString}/${file.name}`;
-  }
+  onAbort(fileUpload) {
+    console.log(`${fileUpload.uniqueId} upload aborted!`);
 
-  uploadFile(file) {
-    file.uniqueId = this.getObjectKey(file);
-    var formData = new FormData();
-    formData.append('key', file.uniqueId);
-    formData.append('acl', this.props.acl);
-    formData.append('Content-Type', file.type);
-    formData.append('AWSAccessKeyId', this.props.awsAccessKeyId);
-    formData.append('policy', this.props.policy)
-    formData.append('signature', this.props.signature);
-    formData.append('success_action_status', this.props.successStatus);
-    formData.append("file",file);
-
-    var xhr = new XMLHttpRequest();
-    xhr.upload.addEventListener("progress", (event) => { this.uploadProgress(event, file) }, false);
-    xhr.addEventListener("load", (event) => { this.uploadComplete(event, file) }, false);
-    xhr.addEventListener("error", (event) => { this.uploadFailed(event, file) }, false);
-    //xhr.addEventListener("abort", this.uploadCanceled, false);
-
-    xhr.open('POST', this.props.url, true);
-    xhr.send(formData);
-    if(this.props.onProgress) {
-      file.uploading = true;
-      file.percentage = 0;
+    if(this.props.onAbort) {
+      this.props.onAbort(fileUpload);
     }
   }
 
   dropFiles(files) {
     files.map((file) => {
-      this.uploadFile(file);
+      var s3Params = {
+        url: this.props.url,
+        keyPrefix: this.props.keyPrefix,
+        acl: this.props.acl,
+        awsAccessKeyId: this.props.awsAccessKeyId,
+        policy: this.props.policy,
+        signature: this.props.signature,
+        successStatus: this.props.successStatus
+      }
+      var callbacks = {
+        onProgress: this.onProgress.bind(this),
+        onComplete: this.onComplete.bind(this),
+        onAbort: this.onAbort.bind(this),
+        onError: this.onError.bind(this)
+      }
+      new FileUpload(file, s3Params, callbacks);
     });
   }
 
   render() {
     return(
       <div>
-        <Dropzone onDrop={this.dropFiles.bind(this)}>
+        <Dropzone onDrop={this.dropFiles.bind(this)} className={this.props.className}>
           {this.props.children}
         </Dropzone>
       </div>
