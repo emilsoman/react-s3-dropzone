@@ -6,12 +6,12 @@ module.exports = {
     example: "./app/example.js",
     bundle: "./app/s3-dropzone.js"
   },
+  devtool: "source-map",
   output: {
     path: path.join(__dirname, 'dist'),
     filename: "[name].js",
     publicPath: "dist/"
   },
-
   module: {
     loaders: [
       {

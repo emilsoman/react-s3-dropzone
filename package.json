@@ -16,8 +16,7 @@
     "webpack-dev-server": "1.14.1"
   },
   "scripts": {
-    "start": "webpack-dev-server --config --hot --progress --colors --inline",
-    "build": "./build",
-    "watch": "webpack --progress --colors --watch"
+    "start": "webpack-dev-server --hot --progress --colors --inline",
+    "build": "./build"
   }
 }
