@@ -5,9 +5,9 @@ module.exports = {
   entry: "./app/s3-dropzone.js",
   output: {
     path: path.join(__dirname, "dist"),
-    filename: "s3-dropzone.js",
+    filename: "react-s3-dropzone.js",
     libraryTarget: "umd",
-    library: 'S3Dropzone'
+    library: 'ReactS3Dropzone'
   },
   externals: {
     react: "react"
