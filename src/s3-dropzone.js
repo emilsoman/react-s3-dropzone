@@ -4,9 +4,6 @@ import FileUpload from './file-upload'
 
 // Can be refactored into a stateless component
 export default class S3Dropzone extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   static propTypes = {
     // Callbacks
@@ -22,7 +19,21 @@ export default class S3Dropzone extends React.Component {
     awsAccessKeyId: PropTypes.string,
     policy: PropTypes.string,
     signature: PropTypes.string,
-    successStatus: PropTypes.number
+    successStatus: PropTypes.number,
+
+    // Dropzone props
+    className: PropTypes.string,
+    disableClick: PropTypes.bool
+  }
+
+  constructor(props) {
+    super(props);
+  }
+
+  open() {
+    if(this.dropzone) {
+      this.dropzone.open();
+    }
   }
 
   onProgress(fileUpload) {
@@ -81,10 +92,16 @@ export default class S3Dropzone extends React.Component {
   render() {
     return(
       <div>
-        <Dropzone onDrop={this.dropFiles.bind(this)} className={this.props.className}>
+        <Dropzone
+          onDrop={this.dropFiles.bind(this)}
+          className={this.props.className}
+          ref={(ref) => this.dropzone = ref}
+          disableClick={this.props.disableClick}>
           {this.props.children}
         </Dropzone>
       </div>
     );
   }
 }
+
+module.exports = S3Dropzone;

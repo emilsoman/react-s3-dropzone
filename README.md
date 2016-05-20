@@ -60,6 +60,11 @@ propTypes = {
   policy: PropTypes.string, // Policy that's generated server-side
   signature: PropTypes.string, // Signature that's generated server-side
   successStatus: PropTypes.number // HTTP response status (use 201 if unsure)
+
+  // Dropzone props
+  // These affect the appearance and behaviour of the dropzone
+  className: PropTypes.string, // CSS classes applied to dropzone area
+  disableClick: PropTypes.bool // Pass false to not open file browser on click
 }
 ```
 

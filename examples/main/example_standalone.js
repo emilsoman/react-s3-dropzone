@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import S3Dropzone from './s3-dropzone';
+import S3Dropzone from '../../src/s3-dropzone'
 
 require("./styles.css");
 
@@ -60,6 +60,10 @@ class DropzoneDemo extends React.Component {
     }
   }
 
+  handleClick() {
+    this.dropzone.open();
+  }
+
   render() {
     var AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
     var POLICY = process.env.POLICY;
@@ -70,13 +74,17 @@ class DropzoneDemo extends React.Component {
           <S3Dropzone
             onProgress={this.updateFileProgress.bind(this)}
             onComplete={this.updateFileProgress.bind(this)}
+            disableClick={true}
             className="dropzone"
             url={URL}
             keyPrefix="uploads/" acl="private" awsAccessKeyId={AWS_ACCESS_KEY_ID}
             policy={POLICY}
             signature={SIGNATURE}
-            successStatus={201}>
-            <div className="file-input-text">Drag and drop files to upload them (or click)</div>
+            successStatus={201}
+            ref={(ref) => this.dropzone = ref}>
+            <div className="file-input-text">
+              Drag and drop files to upload them (or click <a href="#" onClick={this.handleClick.bind(this)}>this link</a>)
+            </div>
           </S3Dropzone>
           <FileStatusList files={this.state.files}/>
         </div>
