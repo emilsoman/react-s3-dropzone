@@ -76,6 +76,7 @@ class DropzoneDemo extends React.Component {
             onComplete={this.updateFileProgress.bind(this)}
             disableClick={true}
             className="dropzone"
+            activeClassName="active-dropzone"
             url={URL}
             keyPrefix="uploads/" acl="private" awsAccessKeyId={AWS_ACCESS_KEY_ID}
             policy={POLICY}

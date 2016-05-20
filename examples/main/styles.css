@@ -4,6 +4,12 @@
   height:100px;
   margin-bottom: 10px;
 }
+.s3-manager .active-dropzone{
+  max-width:520px;
+  background-color: #91FFB4;
+  height:100px;
+  margin-bottom: 10px;
+}
 .s3-manager .upload-queue{
   margin-bottom: 10px;
 }

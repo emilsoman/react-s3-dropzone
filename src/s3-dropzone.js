@@ -23,6 +23,7 @@ export default class S3Dropzone extends React.Component {
 
     // Dropzone props
     className: PropTypes.string,
+    activeClassName: PropTypes.string,
     disableClick: PropTypes.bool
   }
 
@@ -68,6 +69,16 @@ export default class S3Dropzone extends React.Component {
     }
   }
 
+  className() {
+    if(this.props.className) {
+      return this.props.className;
+    } else {
+      if(this.props.activeClassName){
+        return " ";
+      }
+    }
+  }
+
   dropFiles(files) {
     files.map((file) => {
       var s3Params = {
@@ -94,7 +105,8 @@ export default class S3Dropzone extends React.Component {
       <div>
         <Dropzone
           onDrop={this.dropFiles.bind(this)}
-          className={this.props.className}
+          className={this.className()}
+          activeClassName={this.props.activeClassName}
           ref={(ref) => this.dropzone = ref}
           disableClick={this.props.disableClick}>
           {this.props.children}
