@@ -30,7 +30,7 @@ render() {
   </div>
 }
 
-// Find a working example in app/example.js
+// Find a working example in examples directory
 ```
 
 Props:
