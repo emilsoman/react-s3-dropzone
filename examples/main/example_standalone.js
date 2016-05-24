@@ -60,6 +60,13 @@ class DropzoneDemo extends React.Component {
     }
   }
 
+  removeFile = (file) => {
+    var files = this.state.files.filter((f) => {
+      return f.uniqueId != file.uniqueId;
+    });
+    this.setState({files: files});
+  }
+
   handleClick = () => {
     this.dropzone.open();
   }
@@ -74,6 +81,7 @@ class DropzoneDemo extends React.Component {
           <S3Dropzone
             onProgress={this.updateFileProgress}
             onComplete={this.updateFileProgress}
+            onAbort={this.removeFile}
             disableClick={true}
             className="dropzone"
             activeClassName="active-dropzone"
