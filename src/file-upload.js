@@ -45,7 +45,7 @@ export default class FileUpload {
     }
   }
 
-  abort() {
+  abort = () => {
     if(this.xhr) {
       this.xhr.abort();
     }

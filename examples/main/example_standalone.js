@@ -15,7 +15,7 @@ const ProgressBar = (props) => {
 }
 
 const FileStatus = (props) => {
-  var progressBar = props.file.uploading ? <ProgressBar percentage={props.file.percentage} onAbort={props.file.abort.bind(props.file)}/> : null;
+  var progressBar = props.file.uploading ? <ProgressBar percentage={props.file.percentage} onAbort={props.file.abort}/> : null;
   return(
     <div className="upload-queue-item">
       {props.file.file.name}
@@ -43,14 +43,14 @@ class DropzoneDemo extends React.Component {
     };
   }
 
-  updateFileProgress(file) {
+  updateFileProgress = (file) => {
     var exists = false;
     var files = this.state.files.map((f) => {
       if(f.uniqueId === file.uniqueId) {
         exists = true;
-        return f;
-      } else {
         return file;
+      } else {
+        return f;
       }
     })
     if(!exists) {
@@ -60,7 +60,7 @@ class DropzoneDemo extends React.Component {
     }
   }
 
-  handleClick() {
+  handleClick = () => {
     this.dropzone.open();
   }
 
@@ -72,8 +72,8 @@ class DropzoneDemo extends React.Component {
     return (
         <div className="s3-manager">
           <S3Dropzone
-            onProgress={this.updateFileProgress.bind(this)}
-            onComplete={this.updateFileProgress.bind(this)}
+            onProgress={this.updateFileProgress}
+            onComplete={this.updateFileProgress}
             disableClick={true}
             className="dropzone"
             activeClassName="active-dropzone"
@@ -84,7 +84,7 @@ class DropzoneDemo extends React.Component {
             successStatus={201}
             ref={(ref) => this.dropzone = ref}>
             <div className="file-input-text">
-              Drag and drop files to upload them (or click <a href="#" onClick={this.handleClick.bind(this)}>this link</a>)
+              Drag and drop files to upload them (or click <a href="#" onClick={this.handleClick}>this link</a>)
             </div>
           </S3Dropzone>
           <FileStatusList files={this.state.files}/>
