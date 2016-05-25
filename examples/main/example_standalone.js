@@ -15,18 +15,18 @@ const ProgressBar = (props) => {
 }
 
 const FileStatus = (props) => {
-  var progressBar = props.file.uploading ? <ProgressBar percentage={props.file.percentage} onAbort={props.file.abort}/> : null;
+  var progressBar = props.fileUpload.uploading ? <ProgressBar percentage={props.fileUpload.percentage} onAbort={props.fileUpload.abort}/> : null;
   return(
     <div className="upload-queue-item">
-      {props.file.file.name}
+      {props.fileUpload.file.name}
       {progressBar}
     </div>
   );
 }
 
 const FileStatusList = (props) => {
-  var list = props.files.map((file) => {
-    return(<FileStatus file={file} key={file.uniqueId}/>);
+  var list = props.fileUploads.map((fileUpload) => {
+    return(<FileStatus fileUpload={fileUpload} key={fileUpload.uniqueId}/>);
   });
   return(
     <div className="upload-queue">
@@ -39,32 +39,32 @@ class DropzoneDemo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      files: []
+      fileUploads: []
     };
   }
 
-  updateFileProgress = (file) => {
+  updateFileProgress = (fileUpload) => {
     var exists = false;
-    var files = this.state.files.map((f) => {
-      if(f.uniqueId === file.uniqueId) {
+    var fileUploads = this.state.fileUploads.map((f) => {
+      if(f.uniqueId === fileUpload.uniqueId) {
         exists = true;
-        return file;
+        return fileUpload;
       } else {
         return f;
       }
     })
     if(!exists) {
-      this.setState({files: this.state.files.concat(file)});
+      this.setState({fileUploads: this.state.fileUploads.concat(fileUpload)});
     } else {
-      this.setState({files: files});
+      this.setState({fileUploads: fileUploads});
     }
   }
 
-  removeFile = (file) => {
-    var files = this.state.files.filter((f) => {
-      return f.uniqueId != file.uniqueId;
+  removeFile = (fileUpload) => {
+    var fileUploads = this.state.fileUploads.filter((f) => {
+      return f.uniqueId != fileUpload.uniqueId;
     });
-    this.setState({files: files});
+    this.setState({fileUploads: fileUploads});
   }
 
   handleClick = () => {
@@ -95,7 +95,7 @@ class DropzoneDemo extends React.Component {
               Drag and drop files to upload them (or click <a href="#" onClick={this.handleClick}>this link</a>)
             </div>
           </S3Dropzone>
-          <FileStatusList files={this.state.files}/>
+          <FileStatusList fileUploads={this.state.fileUploads}/>
         </div>
     );
   }
