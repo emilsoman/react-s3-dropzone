@@ -68,6 +68,51 @@ propTypes = {
 }
 ```
 
+### Server Side Policy Generation
+
+Sample code in Ruby:
+
+```ruby
+# This class abstracts away the logic to generate
+# "policy" and "signature" for S3 direct uploads.
+class S3Upload
+  attr_reader :policy, :signature
+
+  def initialize
+    @policy = Base64.encode64(policy_data.to_json).gsub("\n", "")
+    @signature = create_signature(@policy)
+  end
+
+  private
+
+  def policy_data
+    {
+      expiration: 10.hours.from_now.utc.iso8601,
+      conditions: [
+        ["starts-with", "$key", "uploads/"],
+        ["starts-with","$content-type", ""],
+        {bucket: Settings.s3_bucket},
+        {acl: "private"},
+        {success_action_status: "201"}
+      ]
+    }
+  end
+
+  def create_signature(policy)
+    Base64.encode64(
+      OpenSSL::HMAC.digest(
+        OpenSSL::Digest.new('sha1'),
+        Settings.s3_secret_access_key, policy
+      )
+    ).gsub("\n", "")
+  end
+end
+
+# u = S3Upload.new
+# u.policy #=> Returns policy
+# u.signature #=> Returns signature
+```
+
 ## Development
 
 ```
