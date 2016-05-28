@@ -1,7 +1,8 @@
 export default class FileUpload {
   constructor(file, s3Params, callbacks) {
     this.file = file;
-    this.uniqueId = this.getObjectKey(file, s3Params.keyPrefix);
+    this.s3Key = this.getObjectKey(file, s3Params.keyPrefix);
+    this.uniqueId = this.s3Key;
 
     // Set callbacks
     this.onProgress = callbacks.onProgress;
