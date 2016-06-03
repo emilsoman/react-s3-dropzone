@@ -1,3 +1,5 @@
+// https://github.com/emilsoman/react-s3-dropzone
+
 import React, {PropTypes} from 'react';
 import Dropzone from 'react-dropzone';
 import FileUpload from './file-upload'
@@ -38,32 +40,24 @@ export default class S3Dropzone extends React.Component {
   }
 
   onProgress(fileUpload) {
-    console.log(`${fileUpload.uniqueId} progress : ${fileUpload.percentage}`);
-
     if(this.props.onProgress) {
       this.props.onProgress(fileUpload);
     }
   }
 
   onComplete(fileUpload) {
-    console.log(`${fileUpload.uniqueId} uploaded to : ${fileUpload.s3Url}`);
-
     if(this.props.onComplete) {
       this.props.onComplete(fileUpload);
     }
   }
 
   onError(fileUpload) {
-    console.log(`${fileUpload.uniqueId} upload errored!`);
-
     if(this.props.onError) {
       this.props.onError(fileUpload);
     }
   }
 
   onAbort(fileUpload) {
-    console.log(`${fileUpload.uniqueId} upload aborted!`);
-
     if(this.props.onAbort) {
       this.props.onAbort(fileUpload);
     }
